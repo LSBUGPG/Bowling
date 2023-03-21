@@ -6,26 +6,23 @@ using System.Text;
 public class Scorecard
 {
     string name;
-    char [] marks;
-    int currentMark;
+    string marks;
     int [] scores;
     int currentFrame;
 
     public Scorecard(string name)
     {
         this.name = name;
-        marks = new char[21];
+        marks = "";
         scores = new int[10];
         currentFrame = 0;
-        currentMark = 0;
     }
 
     public Scorecard(string name, string marks, int[] scores)
     {
         this.name = name;
-        this.marks = marks.ToCharArray();
+        this.marks = marks;
         this.scores = scores;
-        currentMark = 0;
         currentFrame = 0;
     }
 
@@ -34,64 +31,54 @@ public class Scorecard
         return "-123456789"[score];
     }
 
-    void SetMarks(char [] marks)
+    void AddMarks(string marks)
     {
-        for (int i = 0; i < marks.Length; ++i)
-        {
-            this.marks[currentMark + i] = marks[i];
-        }
+        this.marks += marks;
     }
 
     public void MarkSpare(int first)
     {
-        SetMarks(new char[] { ScoreToMark(first), '/', ' ' });
+        AddMarks($"{ScoreToMark(first)}/");
     }
 
     public void MarkOpen(int first, int second)
     {
-        SetMarks(new char[] { ScoreToMark(first), ScoreToMark(second), ' ' });
+        AddMarks($"{ScoreToMark(first)}{ScoreToMark(second)}");
     }
 
     public void MarkStrike()
     {
-        SetMarks(new char[] { 'X', ' ', ' ' });
+        AddMarks("X");
     }
 
     public void MarkBonusStrikes()
     {
-        SetMarks(new char[] { 'X', 'X', 'X' });
+        AddMarks("XXX");
     }
 
     public void MarkBonusStrike(int bonus)
     {
-        SetMarks(new char[] { 'X', 'X', ScoreToMark(bonus) });
+        AddMarks($"XX{ScoreToMark(bonus)}");
     }
 
     public void MarkBonusSpare(int first)
     {
-        SetMarks(new char[] { 'X', ScoreToMark(first), '/' });
+        AddMarks($"X{ScoreToMark(first)}/");
     }
 
     public void MarkBonusBalls(int first, int second)
     {
-        SetMarks(new char[] { 'X', ScoreToMark(first), ScoreToMark(second) });
+        AddMarks($"X{ScoreToMark(first)}{ScoreToMark(second)}");
     }
 
     public void MarkBonusStrike()
     {
-        currentMark += 2;
-        SetMarks(new char[] { 'X' });
+        AddMarks("X");
     }
 
     public void MarkBonusBall(int first)
     {
-        currentMark += 2;
-        SetMarks(new char[] { ScoreToMark(first) });
-    }
-
-    public void MarkNextFrame()
-    {
-        currentMark += 2;
+        AddMarks($"{ScoreToMark(first)}");
     }
 
     public void ScoreFrame(int score)
@@ -102,7 +89,7 @@ public class Scorecard
 
     string ListMarks()
     {
-        return new string (marks);
+        return marks;
     }
 
     string ListScores()
@@ -127,22 +114,42 @@ public class Scorecard
 
     public bool Equals(Scorecard other)
     {
-        return name == other.name && Enumerable.SequenceEqual(marks, other.marks) && Enumerable.SequenceEqual(scores, other.scores);
+        return name == other.name && marks == other.marks && Enumerable.SequenceEqual(scores, other.scores);
     }
 
     public void Display(Display display)
     {
         display.player.text = name;
         int mark = 0;
-        for (int frame = 0; frame < 10; frame++)
+        for (int frame = 1; frame <= 10; frame++)
         {
-            var displayFrame = display.frames[frame];
-            for (int i = 0; i < displayFrame.marks.Length; ++i)
+            var displayFrame = display.frames[frame - 1];
+            int marksThisFrame = 2;
+            bool strike = marks[mark] == 'X';
+            if (strike)
             {
-                displayFrame.marks[i].text = marks[mark + i].ToString();
+                marksThisFrame = 1;
             }
-            mark += 2;
-            displayFrame.subTotal.text = scores[frame].ToString();
+            if (frame == 10)
+            {
+                if (strike || marks[mark + 1] == '/')
+                {
+                    marksThisFrame = 3;
+                }
+            }
+            for (int i = 0; i < marksThisFrame; ++i)
+            {
+                if (marksThisFrame == 1)
+                {
+                    displayFrame.marks[1].text = marks[mark + i].ToString();
+                }
+                else
+                {
+                    displayFrame.marks[i].text = marks[mark + i].ToString();
+                }
+            }
+            mark += marksThisFrame;
+            displayFrame.subTotal.text = scores[frame - 1].ToString();
         }
     }
 }

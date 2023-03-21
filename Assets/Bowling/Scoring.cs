@@ -119,7 +119,6 @@ public class Scoring
                 }
                 else
                 {
-                    scorecard.MarkSpare(bowlOne);
                     if (extraFrame == 10)
                     {
                         scorecard.MarkBonusStrike();
@@ -132,7 +131,6 @@ public class Scoring
                     scorecard.ScoreFrame(totalScore);
                 }
             }
-            scorecard.MarkNextFrame();
         }
     }
 }
