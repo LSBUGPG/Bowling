@@ -9,12 +9,12 @@ public class Scoring
 {
     public static void Score(Rolls rolls, Scorecard scorecard)
     {
-        int frameScore = 0, prevFrame = 0, prevFrameTwo = 0, bowlOne, bowlTwo = 0, frame = 1, totalScore = 0, extraFrame;
+        int frameScore = 0, prevFrame = 0, prevFrameTwo = 0, totalScore = 0, extraFrame;
         bool strike = false, strikeTwo = false, spare = false;
 
-        for (; frame <= 10; frame++)
+        for (int frame = 1; frame <= 10; frame++)
         {
-            bowlOne = rolls.NextRoll();
+            int bowlOne = rolls.NextRoll();
             if (spare == true)// if previous frame was a spare add in the extra points now
             {
                 prevFrame = 10 + bowlOne;
@@ -39,6 +39,7 @@ public class Scoring
                 prevFrameTwo = 20;
             }
 
+            int bowlTwo = 0;
             if (bowlOne < 10) //check to make sure there wasn't a strike on first bowl
             {
                 bowlTwo = rolls.NextRoll();
