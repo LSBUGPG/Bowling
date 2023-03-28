@@ -22,18 +22,16 @@ public class Scoring
                 totalScore = prevFrame + totalScore;
                 scorecard.ScoreFrame(totalScore);
             }
-            if (strikeTwo == true && bowlOne == 10)
+            if (strikeTwo == true)
             {
-                prevFrameTwo = 30;
+                prevFrameTwo = 20 + bowlOne;
                 totalScore = prevFrameTwo + totalScore;
                 scorecard.ScoreFrame(totalScore);
-            }
-            if (strikeTwo == true && bowlOne != 10)
-            {
-                strikeTwo = false;
-                prevFrameTwo = 10 + 10 + bowlOne;
-                totalScore = prevFrameTwo + totalScore;
-                scorecard.ScoreFrame(totalScore);
+
+                if (bowlOne != 10)
+                {
+                    strikeTwo = false;
+                }
             }
             if (strike == true && bowlOne == 10)
             {
